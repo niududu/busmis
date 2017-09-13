@@ -1,0 +1,41 @@
+
+<form  id="busrepairinfoAddForm"  role="form" action="busrepairinfo/add.mvc" method="post">
+        <div class="form-group">
+            <label class="col-sm-2 control-label" >维修序号</label>
+            <div class="col-sm-4">
+                <input type="text" class="form-control" name="repairNo" id="repairNo" />
+            </div>
+            <label class="col-sm-2 control-label" >维修日期地址</label>
+            <div class="col-sm-4">
+               <input type="date" class="form-control" name="repairDate"  data-date-format="YYYY-MMMM-DD"  id="repairDate" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label" >维修类型编号</label>
+            <div class="col-sm-4">
+                <select class="form-control" name="repairtype.typeNo"></select>
+            </div>
+            <label class="col-sm-2 control-label" >维修单位编号</label>
+            <div class="col-sm-4">
+            	  <select class="form-control" name="provider.providerNo"></select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label" >车辆编号</label>
+            <div class="col-sm-4">
+                <select class="form-control" name="bus.busid"></select>
+            </div>
+            <label class="col-sm-2 control-label" >司机编号</label>
+            <div class="col-sm-4">
+				<select class="form-control" name="drive.driverid"></select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label>维修说明</label>
+            <input class="form-control" name="repairDesc">
+        </div>
+
+        <button type="submit"  class="btn btn-default">提交</button>
+        <button type="reset" class="btn btn-default">取消</button>
+</form>
+

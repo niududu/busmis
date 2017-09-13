@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neusoft.busManager.repairinfo.mapper.IBusRepairInfoMapper">
+ 	<!-- 基础属性映射 -->
+ 	<resultMap type="BusRepair" id="BusRepairInfoResultMap">
+ 		<id property="repairNo" column="RepairNo"/>
+ 		<result property="repairDate" column="RepairDate"/>
+ 		<result property="repairDesc" column="RepairDesc"/>
+ 	</resultMap>
+ 	<!-- 外键映射(对多) 
+ 	
+ 	<resultMap type="BusRepair" id="BusRepairInfoCollectionResultMap" extends="BusRepairInfoResultMap">
+ 		<collection property="reapirtypes" column="RepairtypeNo" select=""></collection>
+ 		<collection property="providers" column="ProviderNo" select=""></collection>
+ 	</resultMap>
+ 	-->
+ 	<!-- 外键映射 (对一)
+ 	车辆维修表对应维修类型：一对一
+ 	车辆维修表对应维修单位：一对一
+ 	车辆维修表对应车辆编号：一对一	
+ 	车辆维修表对应司机编号：一对一	
+ 	-->
+ 	<resultMap type="BusRepair" id="BusRepairInfoWithRepairTypeAssociationResultMap" extends="BusRepairInfoResultMap">
+ 		<association property="repairtype" column="TypeNo" select="com.neusoft.busManager.repairinfo.mapper.IRepairTypeMapper.select"></association>
+ 	</resultMap>
+ 	<resultMap type="BusRepair" id="BusRepairInfoWithProviderAssociationResultMap" extends="BusRepairInfoWithRepairTypeAssociationResultMap">
+ 		<association property="provider" column="ProviderNo" select="com.neusoft.busManager.repairinfo.mapper.IRepairProviderMapper.select"></association>
+ 	</resultMap>
+ 	<resultMap type="BusRepair" id="BusRepairInfoWithBusAssociationResultMap" extends="BusRepairInfoWithProviderAssociationResultMap">
+ 		<association property="bus" column="BusID" select="com.neusoft.busManager.baseinfo.mapper.IBusMapper.select"></association>
+ 	</resultMap>
+ 	<resultMap type="BusRepair" id="BusRepairInfoWithDriverAssociationResultMap" extends="BusRepairInfoWithBusAssociationResultMap">
+ 		<association property="drive" column="DriverID" select="com.neusoft.busManager.baseinfo.mapper.IBusDriverMapper.select"></association>
+ 	</resultMap>
+ 	
+ 	<insert id="insert" parameterType="BusRepair">
+ 		insert into BusRepairInfo(RepairNo,RepairDate,RepairDesc,BusID,DriverID,TypeNo,ProviderNo)
+ 		values(#{repairNo},#{repairDate},#{repairDesc},#{bus.busid},#{drive.driverid},#{repairtype.typeNo},#{provider.providerNo})
+ 	</insert>
+ 	
+ 	<update id="update" parameterType="BusRepair">
+ 		update BusRepairInfo set RepairDate=#{repairDate},RepairDesc=#{repairDesc},
+ 		BusID=#{bus.busid},DriverID=#{drive.driverid},
+ 		TypeNo=#{repairtype.typeNo},ProviderNo=#{provider.providerNo}
+ 		where RepairNo=#{repairNo}
+ 	</update>
+ 	
+ 	<delete id="delete" parameterType="BusRepair">
+ 		delete from BusRepairInfo where RepairNo=#{repairNo}
+ 	</delete>
+ 	<!--  -->
+ 	<select id="select" parameterType="int" resultMap="BusRepairInfoWithBusAssociationResultMap">
+ 		select * from BusRepairInfo where RepairNo=#{repairNo}
+ 	</select>
+ 	
+ 	<select id="selectListByAll" resultMap="BusRepairInfoWithBusAssociationResultMap">
+ 		select * from BusRepairInfo
+ 	</select>
+ 	
+ 	<select id="selectListByAllWithPage" resultMap="BusRepairInfoWithBusAssociationResultMap">
+ 		 select a.*,b.*,c.*,d.*,e.* from BusRepairInfo a inner join repairType b on a.typeNo=b.typeNo 
+       inner join repairProvider c on a.providerNo=c.providerNo inner join Bus d on a.busid=d.busid
+        inner join BusDriver e on a.driverid=e.driverid
+ 	</select>
+ 	
+ 	<select id="selectCountByAll" resultType="int">
+ 		select count(RepairNo) from BusRepairInfo
+ 	</select>
+ 	
+ 	<select id="selectByTypeNo" parameterType="int" resultMap="BusRepairInfoWithRepairTypeAssociationResultMap">
+ 		select * from BusRepairInfo where TypeNo=#{typeNo}
+ 	</select>
+ 	<select id="selectByProviderNo" parameterType="int" resultMap="BusRepairInfoWithDriverAssociationResultMap">
+ 		select * from BusRepairInfo where ProviderNo=#{providerNo}
+ 	</select>
+ 	<select id="selectByBusId" parameterType="int" resultMap="BusRepairInfoWithBusAssociationResultMap">
+ 		select * from BusRepairInfo where BusID=#{busId}
+ 	</select>
+ 	
+ 	<select id="selectByDriveId" parameterType="int" resultMap="BusRepairInfoWithDriverAssociationResultMap">
+ 		select * from BusRepairInfo where DriverID=#{driverid}
+ 	</select>
+ 	
+ 	<select id="selectListByCondition" resultMap="BusRepairInfoWithDriverAssociationResultMap">
+ 		select * from BusRepairInfo
+ 		<where>
+		<if test="typeNo!=0">
+		   and TypeNo=#{typeNo}
+		</if>
+		<if test="providerNo!=0">
+		   and ProviderNo=#{providerNo}
+		</if>
+		<if test="busId!=0">
+		   and BusID=#{busId}
+		</if>
+		<if test="driveId!=0">
+		   and DriverID=#{driverid}
+		</if>
+		</where>
+ 	</select>
+ 	
+ 	<select id="selectListByConditionWithPage" resultMap="BusRepairInfoWithDriverAssociationResultMap">
+ 		select * from BusRepairInfo
+ 		<where>
+		<if test="typeNo!=0">
+		   and TypeNo=#{typeNo}
+		</if>
+		<if test="providerNo!=0">
+		   and ProviderNo=#{providerNo}
+		</if>
+		<if test="busId!=0">
+		   and BusID=#{busId}
+		</if>
+		<if test="driveId!=0">
+		   and DriverID=#{driverid}
+		</if>
+		</where>
+ 	</select>
+ 	
+ 	<select id="selectCountByCondition" resultType="int">
+ 		 select count(*) from BusRepairInfo
+		<where>
+		<if test="typeNo!=0">
+		   and TypeNo=#{typeNo}
+		</if>
+		<if test="providerNo!=0">
+		   and ProviderNo=#{providerNo}
+		</if>
+		<if test="busId!=0">
+		   and BusID=#{busId}
+		</if>
+		<if test="driveId!=0">
+		   and DriverID=#{driverid}
+		</if>
+		</where>
+ 	</select>
+</mapper> 

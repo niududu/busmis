@@ -52,22 +52,22 @@
     	<property name="jndiName" value="java:comp/env/wuye"/>
 	</bean>
 	-->
-	<!-- 使用C3P0连接池框架 配置数据源  实验室版本 -->
+	<!-- 使用C3P0连接池框架 配置数据源  实验室版本 
 	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
 		<property name="driverClass" value="com.mysql.jdbc.Driver"/>
 		<property name="jdbcUrl" value="jdbc:mysql://10.1.53.116:3306/busmis"/>
 		<property name="user" value="root"/>
 		<property name="password" value="abc"/>
 	</bean>
-	
-	<!-- 测试版本
+	-->
+	<!-- 测试版本-->
 	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
 		<property name="driverClass" value="com.mysql.jdbc.Driver"/>
-		<property name="jdbcUrl" value="jdbc:mysql://localhost:3306/busmin"/>
+		<property name="jdbcUrl" value="jdbc:mysql://localhost:3306/busmanager"/>
 		<property name="user" value="root"/>
 		<property name="password" value="123"/>
 	</bean> 
-	-->
+	
 	<!-- 配置Spring管理SqlSessionFactory对象 -->
 	<bean id="sqlSessionFactory"  class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource" ref="dataSource"></property>
